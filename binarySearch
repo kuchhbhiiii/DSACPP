@@ -138,6 +138,43 @@ void postOrderTraversal(node* root){
 }
 
 
+node* buildFromLevelOrderTraversal(node* root){
+    
+    queue<node* > q;
+    cout << "Enter data for root: " << endl;
+    int data;
+    cin >> data;
+    root = new node(data);
+    q.push(root);
+    
+    while(!q.empty()){
+        node* temp = q.front();
+        q.pop();
+        
+        cout << "Enter data to insert in left of: " << temp -> data << endl;
+        int leftData;
+        cin >> leftData;
+        if(leftData != -1){
+            temp -> left = new node(leftData);
+            q.push(temp -> left);
+        }
+        
+        cout << "Enter data to insert in right of: " << temp -> data << endl;
+        int rightData;
+        cin >> rightData;
+        
+        if(rightData != -1){
+            temp -> right = new node(rightData);
+            q.push(temp -> right);
+        }
+    }
+    
+    return root;
+}
+
+
+
+
 int main() {
     
     node* root = NULL;
@@ -162,6 +199,11 @@ int main() {
     cout << "postorder traversal: " << endl;
     postOrderTraversal(root);
     cout << endl;
+    
+    root = buildFromLevelOrderTraversal(root);
+    
+    cout << "level order traversal: " << endl;
+    levelOrderTraversal(root);
     
     
     
