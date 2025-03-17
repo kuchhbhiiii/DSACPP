@@ -172,6 +172,77 @@ node* buildFromLevelOrderTraversal(node* root){
     return root;
 }
 
+int height(node* root){
+    
+    if(root == NULL) return 0;
+    
+    int leftHeight = height(root -> left);
+    int rightHeight = height(root -> right);
+    
+    return max(leftHeight, rightHeight) + 1;
+}
+
+int width(node* root){
+    queue<pair<node*, long long>> q;
+    
+    q.push({root, 0});
+    
+    int maxWidth = 0;
+    
+    while(!q.empty()){
+        int level = q.size();
+        long long first_index = q.front().second;
+        long long last_index = q.back().second;
+        
+        maxWidth = max(maxWidth, int (last_index - first_index + 1));
+        
+        for(int i = 0; i<level; i++){
+            auto [temp, index] = q.front();
+            
+             q.pop();
+            
+            if(temp -> left)
+                q.push({temp -> left, 2 * (index - first_index)});
+                
+            if(temp -> right)
+                q.push({temp -> right, 2 * (index - first_index) + 1});
+        }
+    }
+    
+    return maxWidth;
+}
+
+
+int diameter(node* root, int &maxDiameter) {
+    // Base case
+    if (root == NULL) return 0;
+    
+    cout << "maxDiameter: " << maxDiameter << endl;
+    
+
+    int leftHeight = diameter(root->left, maxDiameter);
+    int rightHeight = diameter(root->right, maxDiameter);
+
+    // Diameter at this node
+    int currDiameter = leftHeight + rightHeight;
+    
+    cout << "curr Diameter: " << currDiameter << endl;
+
+    // Update the maximum diameter found so far
+    maxDiameter = max(maxDiameter, currDiameter);
+
+    // Return the height of the current subtree
+    return max(leftHeight, rightHeight) + 1;
+}
+
+
+int getDiameter(node* root){
+    int maxDiameter = 0;
+    diameter(root, maxDiameter);
+    
+    return maxDiameter;
+}
+
 
 
 
@@ -200,11 +271,18 @@ int main() {
     postOrderTraversal(root);
     cout << endl;
     
+    cout <<"height: " << height(root) << endl;
+    
+    cout <<"width: " <<  width(root) << endl;
+    cout <<"diameter: " << getDiameter(root) << endl;
+    
+    
     root = buildFromLevelOrderTraversal(root);
     
     cout << "level order traversal: " << endl;
     levelOrderTraversal(root);
     
+ 
     
     
     return 0;
