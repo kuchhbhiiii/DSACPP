@@ -22,7 +22,7 @@ node* buildTree(node* root){
     int data;
     cout << "Enter data: " << endl;
     cin >> data;
-      if(data == -1){
+    if(data == -1){
         return NULL;
     }
     
@@ -65,41 +65,49 @@ void levelOrderTraversal(node* root){
 }
 
 void reverseLevelOrderTraversal(node* root){
+    if(root == nullptr){
+        cout << "tree has no node: " << endl;
+        return;
+    }
     
-    queue<node* > q;
-    stack<node* > s;
+    queue<node*> q;
+    stack<node*> s;
     
     q.push(root);
-    q.push(NULL);
-    s.push(root);
-    s.push(NULL);
+    q.push(nullptr);
+    // s.push(root);
+    // s.push(nullptr);
     
     while(!q.empty()){
         node* temp = q.front();
+        s.push(temp);
         q.pop();
-        if(temp == NULL && !q.empty()){
-            s.push(NULL);
+        if(temp == nullptr){
+            if(!q.empty()){
+                q.push(nullptr);
+            }
         }else{
-             if(temp -> right){
+            if(temp -> right){
                 q.push(temp -> right);
-                s.push(temp -> right);
             }
             if(temp -> left){
                 q.push(temp -> left);
-                s.push(temp -> left);
             }
         }
     }
-      while(!s.empty()){
-            node* element = s.top();
+    
+    while(!s.empty()){
+        if(s.top() != nullptr){
+            cout << s.top() -> data << " ";
             s.pop();
-            if(element == NULL){
-                cout << endl;
-            }else{
-                cout << element -> data << " ";
-            }
+        }else{
+            cout << endl;
+            s.pop();
         }
+    }
+    
 }
+
 
 void inOrderTraversal(node* root){
     
@@ -216,22 +224,14 @@ int width(node* root){
 int diameter(node* root, int &maxDiameter) {
     // Base case
     if (root == NULL) return 0;
-    
-    cout << "maxDiameter: " << maxDiameter << endl;
-    
 
     int leftHeight = diameter(root->left, maxDiameter);
     int rightHeight = diameter(root->right, maxDiameter);
 
-    // Diameter at this node
     int currDiameter = leftHeight + rightHeight;
-    
-    cout << "curr Diameter: " << currDiameter << endl;
 
-    // Update the maximum diameter found so far
     maxDiameter = max(maxDiameter, currDiameter);
 
-    // Return the height of the current subtree
     return max(leftHeight, rightHeight) + 1;
 }
 
@@ -239,10 +239,33 @@ int diameter(node* root, int &maxDiameter) {
 int getDiameter(node* root){
     int maxDiameter = 0;
     diameter(root, maxDiameter);
-    
     return maxDiameter;
 }
 
+bool isBalanced(node* root, int& height) {
+    if (root == NULL) {
+        height = 0;
+        return true;
+    }
+
+    int leftHeight = 0, rightHeight = 0;
+
+    bool leftBalanced = isBalanced(root->left, leftHeight);
+    bool rightBalanced = isBalanced(root->right, rightHeight);
+
+    height = max(leftHeight, rightHeight) + 1;
+
+    if (abs(leftHeight - rightHeight) > 1) {
+        return false;
+    }
+
+    return leftBalanced && rightBalanced;
+}
+
+bool isTreeBalanced(node* root) {
+    int height = 0;
+    return isBalanced(root, height);
+}
 
 
 
@@ -252,38 +275,40 @@ int main() {
     
     root = buildTree(root);
     
-    cout << "level order traversal: " << endl;
-    levelOrderTraversal(root);
+    // cout << "level order traversal: " << endl;
+    // levelOrderTraversal(root);
     
     cout << "reverse level oreder travesal: " << endl;
     reverseLevelOrderTraversal(root);
     cout << endl;
     
-    cout << "inorder traversal: " << endl;
-    inOrderTraversal(root);
-    cout << endl;
+    // cout << "inorder traversal: " << endl;
+    // inOrderTraversal(root);
+    // cout << endl;
     
-    cout << "preorder traversal: " << endl;
-    preOrderTraversal(root);
-    cout << endl;
+    // cout << "preorder traversal: " << endl;
+    // preOrderTraversal(root);
+    // cout << endl;
     
-    cout << "postorder traversal: " << endl;
-    postOrderTraversal(root);
-    cout << endl;
+    // cout << "postorder traversal: " << endl;
+    // postOrderTraversal(root);
+    // cout << endl;
     
-    cout <<"height: " << height(root) << endl;
+    // cout <<"height: " << height(root) << endl;
     
-    cout <<"width: " <<  width(root) << endl;
-    cout <<"diameter: " << getDiameter(root) << endl;
+    // cout <<"width: " <<  width(root) << endl;
+    // cout <<"diameter: " << getDiameter(root) << endl;
     
     
-    root = buildFromLevelOrderTraversal(root);
+    // root = buildFromLevelOrderTraversal(root);
     
-    cout << "level order traversal: " << endl;
-    levelOrderTraversal(root);
+    // cout << "level order traversal: " << endl;
+    // levelOrderTraversal(root);
+    
+    cout << "balanced: " << isTreeBalanced(root) << endl;
     
  
-    
+    //5 7 1 -1 -1 8 -1 -1 3 -1 2 -1 -1 
     
     return 0;
 }
